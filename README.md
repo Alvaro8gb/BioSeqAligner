@@ -13,6 +13,17 @@ Un visualizador de alineamiento de secuencias basado en web construido con Strea
 - **Alineamiento en Tiempo Real**: Resultados instantáneos con métricas detalladas
 - **Arquitectura MVC**: Separación clara de responsabilidades con diseño modular
 
+## Estructura del Proyecto
+
+```
+BioSeqAligner/
+├── app.py              # Aplicación principal de Streamlit (Vistas y Controladores)
+├── algorithms.py       # Algoritmos de alineamiento (Modelo)
+├── visualization.py    # Componentes de visualización (Helpers de Vista)
+├── __init__.py        # Inicialización del paquete
+├── requirements.txt    # Dependencias
+└── README.md          # Documentación
+```
 
 ### Arquitectura
 
@@ -24,7 +35,7 @@ El proyecto sigue el patrón **MVC (Modelo-Vista-Controlador)**:
   - `SmithWaterman`: Algoritmo de alineamiento local
   - `get_aligner()`: Función factory para selección de algoritmo
 
-- **Vista** (`ui.py`):
+- **Vista** (`visualization.py`):
   - `AlignmentVisualizer`: Generación de HTML para visualización de alineamiento
   - `AlignmentStats`: Cálculos estadísticos
   - `LegendComponent`: Componente UI de leyenda
@@ -53,7 +64,7 @@ Ejecuta la aplicación Streamlit:
 streamlit run app.py
 ```
 
-La aplicación se abrirá en tu navegador predeterminado en `http://localhost:***`
+La aplicación se abrirá en tu navegador predeterminado en `http://localhost:8501`
 
 ## Cómo Usar
 
@@ -87,9 +98,15 @@ Prueba estos ejemplos:
 
 Encuentra el mejor alineamiento entre dos secuencias completas. Ideal para comparar secuencias de longitud similar.
 
+**Referencia:**
+- Needleman, S. B., & Wunsch, C. D. (1970). A general method applicable to the search for similarities in the amino acid sequence of two proteins. *Journal of Molecular Biology*, 48(3), 443-453. [DOI: 10.1016/0022-2836(70)90057-4](https://doi.org/10.1016/0022-2836(70)90057-4)
+
 ### Smith-Waterman (Alineamiento Local)
 
 Encuentra la mejor subsecuencia coincidente entre dos secuencias. Ideal para encontrar regiones similares en secuencias de diferentes longitudes.
+
+**Referencia:**
+- Smith, T. F., & Waterman, M. S. (1981). Identification of common molecular subsequences. *Journal of Molecular Biology*, 147(1), 195-197. [DOI: 10.1016/0022-2836(81)90087-5](https://doi.org/10.1016/0022-2836(81)90087-5)
 
 ## Desarrollo
 
@@ -130,4 +147,4 @@ Licencia MIT - Ver el archivo [LICENSE](LICENSE) para más detalles.
 
 Para cualquier otra duda contactar: 
 - **Álvaro García Barragán**
-- **Pablo Fernández** 
+- **Pablo Fernández**
