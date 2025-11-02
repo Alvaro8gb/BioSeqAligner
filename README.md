@@ -35,7 +35,7 @@ El proyecto sigue el patrón **MVC (Modelo-Vista-Controlador)**:
   - `SmithWaterman`: Algoritmo de alineamiento local
   - `get_aligner()`: Función factory para selección de algoritmo
 
-- **Vista** (`visualization.py`):
+- **Vista** (`ui.py`):
   - `AlignmentVisualizer`: Generación de HTML para visualización de alineamiento
   - `AlignmentStats`: Cálculos estadísticos
   - `LegendComponent`: Componente UI de leyenda
@@ -64,7 +64,7 @@ Ejecuta la aplicación Streamlit:
 streamlit run app.py
 ```
 
-La aplicación se abrirá en tu navegador predeterminado en `http://localhost:8501`
+La aplicación se abrirá en tu navegador predeterminado en `http://localhost:***`
 
 ## Cómo Usar
 
