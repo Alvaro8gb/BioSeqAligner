@@ -1,6 +1,10 @@
 # BioSeqAligner 🧬
 
-Un visualizador de alineamiento de secuencias basado en web construido con Streamlit. Compara secuencias de ADN/ARN utilizando los algoritmos de alineamiento Needleman-Wunsch (global) o Smith-Waterman (local) con una hermosa visualización codificada por colores.
+Un visualizador de alineamiento de secuencias basado en web construido con Streamlit. Compara secuencias de ADN/ARN utilizando los algoritmos de alineamiento Needleman-Wunsch (global) o Smith-Waterman (local) con una visualización codificada por colores.
+
+> El código de los algoritmos está escrito en Python, lo que facilita su comprensión.  
+> Sin embargo, para un entendimiento completo recomendamos utilizar el siguiente recurso:  
+> [https://experiments.mostafa.io/needleman-wunsch/](https://experiments.mostafa.io/needleman-wunsch/)
 
 ## Características
 
