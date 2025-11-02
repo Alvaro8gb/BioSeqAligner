@@ -13,17 +13,6 @@ Un visualizador de alineamiento de secuencias basado en web construido con Strea
 - **Alineamiento en Tiempo Real**: Resultados instantáneos con métricas detalladas
 - **Arquitectura MVC**: Separación clara de responsabilidades con diseño modular
 
-## Estructura del Proyecto
-
-```
-BioSeqAligner/
-├── app.py              # Aplicación principal de Streamlit (Vistas y Controladores)
-├── algorithms.py       # Algoritmos de alineamiento (Modelo)
-├── visualization.py    # Componentes de visualización (Helpers de Vista)
-├── __init__.py        # Inicialización del paquete
-├── requirements.txt    # Dependencias
-└── README.md          # Documentación
-```
 
 ### Arquitectura
 
