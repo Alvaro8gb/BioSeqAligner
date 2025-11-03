@@ -41,6 +41,18 @@ def indexes_diagonal(i, filas, columnas):
     # if DEBUG: print(indices_I, indices_J)
     return indices_I, indices_J
 
+def indexes_diagonal2(d, filas, columnas):
+    """
+    Return (I, J) arrays of indices in F on diagonal where i + j == d,
+    considering only 1 <= i < filas and 1 <= j < columnas (i,j are F indices).
+    Uses vectorized numpy operations for speed.
+    """
+    i_size = d if d < filas else filas
+    i = np.arange(1, i_size)
+    j = d - i
+    mask = (j >= 1) & (j < columnas)
+    return i[mask].astype(int), j[mask].astype(int)
+
 # Traceforward 
 def traceforward(F, a, b):
     alnA = []
@@ -112,7 +124,7 @@ def needleman_optimized(a, b):
     # Rellenar matriz
     while i_diag <= diag_amount:
         # if DEBUG: print("i_diag",i_diag, "diag_amount", diag_amount)
-        I, J = indexes_diagonal(i_diag,N,M)
+        I, J = indexes_diagonal2(i_diag,N,M)
         print("I",I,"J",J)
         i_diag += 1
         if not I.any() or not J.any():
