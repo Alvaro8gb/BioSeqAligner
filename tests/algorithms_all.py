@@ -8,6 +8,38 @@ GAP=-2
 def sim(x, y):
         return MATCH if x == y else MISMATCH
 
+def indexes_diagonal(i, filas, columnas):
+    # if DEBUG: print("i",i, "filas", filas, "columnas", columnas)
+    indices_I, indices_J = [], []
+    if i < max(filas, columnas):
+        if filas > columnas:
+            inicio_fila = i
+            inicio_columnas = 1
+        else:
+            inicio_fila = 1
+            inicio_columnas = i
+    else:
+        if filas > columnas:
+            inicio_fila = filas - 1
+            inicio_columnas = i - columnas
+        else:
+            inicio_fila = i - filas
+            inicio_columnas = columnas - 1
+
+    signo_columna = 1 if filas > columnas else -1
+    signo_fila = -1 if filas > columnas else 1
+
+    while inicio_fila > 0 and inicio_columnas > 0 and inicio_fila < filas and inicio_columnas < columnas:
+        indices_I.append(inicio_fila)
+        indices_J.append(inicio_columnas)
+        inicio_fila += signo_fila
+        inicio_columnas += signo_columna
+
+    indices_I = np.array(indices_I, dtype=int)
+    indices_J = np.array(indices_J, dtype=int)
+
+    # if DEBUG: print(indices_I, indices_J)
+    return indices_I, indices_J
 
 # Traceforward 
 def traceforward(F, a, b):
@@ -64,7 +96,38 @@ def needleman_wunsch(a, b):
 
     return F[n][m], ref, best_align
 
+def needleman_optimized(a, b):
+    a = np.asarray(a)
+    b = np.asarray(b)
 
+    n, m = len(a), len(b)
+    N, M = n+1, m+1
+
+    F = np.zeros((N, M), dtype=int)
+    F[1:, 0] = np.arange(1, N) * GAP
+    F[0, 1:] = np.arange(1, M) * GAP
+
+    i_diag = 1
+    diag_amount = N + M - 1
+    # Rellenar matriz
+    while i_diag <= diag_amount:
+        # if DEBUG: print("i_diag",i_diag, "diag_amount", diag_amount)
+        I, J = indexes_diagonal(i_diag,N,M)
+        print("I",I,"J",J)
+        i_diag += 1
+        if not I.any() or not J.any():
+            break
+
+        diag_vals = F[I-1, J-1] + np.where(a[I-1] == b[J-1], MATCH, MISMATCH)
+        up_vals   = F[I-1, J] + GAP
+        left_vals = F[I, J-1] + GAP
+
+        F[I, J] = np.maximum(np.maximum(diag_vals, up_vals), left_vals)
+
+    # if DEBUG: print_matrix(F,N,M)
+    ref, best_align = traceforward(F, a, b)
+
+    return F[n][m], ref, best_align
 
 def smith_waterman(a, b):
     """Local alignment algorithm"""
