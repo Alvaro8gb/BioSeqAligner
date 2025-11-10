@@ -12,6 +12,8 @@ from ui import (
     ExamplesComponent
 )
 
+import streamlit.components.v1 as components
+
 
 # ============================================================================
 # UI COMPONENTS
@@ -136,7 +138,8 @@ def main():
         page_icon="🧬",
         layout="wide"
     )
-    
+
+   
     # Header
     st.title("🧬 BioSeqAligner - Sequence Alignment Visualizer")
     st.markdown("Compare two DNA/RNA sequences using Needleman-Wunsch or Smith-Waterman algorithms")
@@ -171,6 +174,24 @@ def main():
                     st.error(f"❌ Error during alignment: {str(e)}")
     
     render_examples()
+
+    st.title("Algorithm Understanding")
+
+
+    url = "https://experiments.mostafa.io/needleman-wunsch/"
+
+    # Crear un iframe
+    components.html(
+        f"""
+        <iframe src="{url}" 
+                width="800" 
+                height="600" 
+                style="border:none; background-color:white;">
+        </iframe>
+        """,
+        height=600,
+    )
+    
     render_footer()
 
 
