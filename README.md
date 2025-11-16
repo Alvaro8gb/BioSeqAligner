@@ -1,6 +1,15 @@
 # BioSeqAligner 🧬
 
+   [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bioaligner.streamlit.app/)
+
+
 Un visualizador de alineamiento de secuencias basado en web construido con Streamlit. Compara secuencias de ADN/ARN utilizando los algoritmos de alineamiento Needleman-Wunsch (global) o Smith-Waterman (local) con una visualización codificada por colores.
+
+<div>
+    <img src="static/logo.png" alt="Project Logo" style="height: 200px; vertical-align: middle;" />
+    
+
+</div>
 
 > El código de los algoritmos está escrito en Python, lo que facilita su comprensión.  
 > Sin embargo, para un entendimiento completo recomendamos utilizar el siguiente recurso:  
@@ -141,10 +150,13 @@ print(f"Seq2: {aligned_seq2}")
 - Personalizar visualización: Modifica `AlignmentVisualizer` en `visualization.py`
 - Agregar componentes UI: Crea nuevas funciones `render_*()` en `app.py`
 
-
 ## Licencia
 
-Licencia MIT - Ver el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está bajo la licencia [MIT](LICENSE).
+
+## Reporte 
+
+Para más información sobre el proyecto leer [reporte](report.pdf).
 
 
 ## Atribución

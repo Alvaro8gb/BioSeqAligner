@@ -136,10 +136,18 @@ def render_footer():
     """Render application footer"""
     st.markdown("---")
     st.markdown(
-        "<div style='text-align: center; color: #888;'> "
-        "Algorithms: Needleman-Wunsch & Smith-Waterman</div>",
+        """
+        <div style='text-align: center; color: #888;'>
+            BioSeqAligner 
+            <a href='https://creativecommons.org/licenses/by-nc/4.0/' target='_blank'>
+                CC BY-NC 4.0
+            </a><br>
+            Desarrollado por Álvaro García Barragán y Pablo Fernandez Lopez.
+        </div>
+        """,
         unsafe_allow_html=True
     )
+
 
 
 # ============================================================================
