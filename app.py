@@ -110,9 +110,25 @@ def render_alignment_result(aligned_seq1, aligned_seq2, stats, algorithm_name):
         st.write(f"**Alignment Length:** {metrics['length']}")
 
 
+def render_explanation(): 
+    """Render explantion  section"""
+    url = "https://experiments.mostafa.io/needleman-wunsch/"
+    with st.expander("💡  Algorithm Understanding"):
+        # Crear un iframe
+        components.html(
+            f"""
+            <iframe src="{url}" 
+                    width="800" 
+                    height="600" 
+                    style="border:none; background-color:white;">
+            </iframe>
+            """,
+            height=600,
+        )
+    
 def render_examples():
     """Render examples section"""
-    with st.expander("💡 Example Sequences"):
+    with st.expander("🗨️ Example Sequences"):
         st.markdown(ExamplesComponent.get_examples_markdown())
 
 
@@ -120,7 +136,7 @@ def render_footer():
     """Render application footer"""
     st.markdown("---")
     st.markdown(
-        "<div style='text-align: center; color: #888;'>Built with Streamlit 🎈 | "
+        "<div style='text-align: center; color: #888;'> "
         "Algorithms: Needleman-Wunsch & Smith-Waterman</div>",
         unsafe_allow_html=True
     )
@@ -174,24 +190,7 @@ def main():
                     st.error(f"❌ Error during alignment: {str(e)}")
     
     render_examples()
-
-    st.title("Algorithm Understanding")
-
-
-    url = "https://experiments.mostafa.io/needleman-wunsch/"
-
-    # Crear un iframe
-    components.html(
-        f"""
-        <iframe src="{url}" 
-                width="800" 
-                height="600" 
-                style="border:none; background-color:white;">
-        </iframe>
-        """,
-        height=600,
-    )
-    
+    render_explanation()
     render_footer()
 
 

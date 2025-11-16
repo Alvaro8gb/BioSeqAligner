@@ -57,12 +57,11 @@ class AlignmentVisualizer:
     
     @staticmethod
     def _create_cell(char, color, border_color='#ccc'):
-        """Create a single colored cell for a character"""
+        """Create a single colored table cell for a character"""
         return (
-            f'<span style="background-color: {color}; '
-            f'color: #000000; '
-            f'padding: 2px 4px; margin: 1px; '
-            f'border: 1px solid {border_color};">{char}</span>'
+            f'<td style="background-color: {color}; '
+            f'color: #000; text-align:center; padding: 4px; '
+            f'border: 1px solid {border_color};">{char}</td>'
         )
     
     @staticmethod
@@ -74,40 +73,38 @@ class AlignmentVisualizer:
             symbol = '|'
         else:
             symbol = 'x'
-        return (
-            f'<span style="padding: 2px 4px; margin: 1px; '
-            f'color: #888;">{symbol}</span>'
-        )
+        return f'<td style="text-align:center; padding:4px; color:#888;">{symbol}</td>'
     
     @classmethod
     def visualize_alignment(cls, seq1, seq2):
         """
-        Create colored HTML visualization of alignment
+        Create colored HTML visualization of alignment in a table, centered.
         
         Args:
             seq1: First aligned sequence (reference)
             seq2: Second aligned sequence (query)
         
         Returns:
-            str: HTML string with colored visualization
+            str: HTML string with table visualization
         """
-        html = '<div style="font-family: monospace; font-size: 16px; line-height: 1.8;">'
-        
-        # Sequence 1 (Reference)
-        html += '<div style="margin-bottom: 5px;">'
+        html = '<div style="display:flex; justify-content:center;">'
+        html += '<table style="border-collapse: collapse; font-family: monospace; font-size: 24px; line-height: 1.8;">'
+
+        # Sequence 1 row
+        html += '<tr>'
         for char in seq1:
             color = cls.COLORS['gap'] if char == '-' else cls.COLORS['reference']
             html += cls._create_cell(char, color, cls.COLORS['border'])
-        html += '</div>'
-        
-        # Match indicators
-        html += '<div style="margin-bottom: 5px;">'
+        html += '</tr>'
+
+        # Match indicator row
+        html += '<tr>'
         for c1, c2 in zip(seq1, seq2):
             html += cls._create_match_indicator(c1, c2)
-        html += '</div>'
-        
-        # Sequence 2 (Query) - color-coded
-        html += '<div>'
+        html += '</tr>'
+
+        # Sequence 2 row
+        html += '<tr>'
         for c1, c2 in zip(seq1, seq2):
             if c2 == '-':
                 color = cls.COLORS['gap']
@@ -116,11 +113,11 @@ class AlignmentVisualizer:
             else:
                 color = cls.COLORS['mismatch']
             html += cls._create_cell(c2, color, cls.COLORS['border'])
-        html += '</div>'
-        
-        html += '</div>'
+        html += '</tr>'
+
+        html += '</table></div>'
         return html
-    
+
     @staticmethod
     def format_text_alignment(seq1, seq2):
         """
@@ -133,12 +130,10 @@ class AlignmentVisualizer:
         Returns:
             str: Formatted text alignment
         """
-        match_line = ''.join(
-            '|' if a == b else ' '
-            for a, b in zip(seq1, seq2)
-        )
-        
-        return f"Sequence 1: {seq1}\n           {match_line}\nSequence 2: {seq2}"
+        match_line = ''.join('|' if a == b else ' ' for a, b in zip(seq1, seq2))
+        label = "Sequence 1: "
+        padding = ' ' * len(label)
+        return f"{label}{seq1}\n{padding}{match_line}\nSequence 2: {seq2}"
 
 
 class LegendComponent:
