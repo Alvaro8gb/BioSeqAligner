@@ -1,10 +1,11 @@
 import numpy as np
-
+from numba import jit
 
 MATCH=1
 MISMATCH=-1
 GAP=-2
 
+@jit
 def sim(x, y):
         return MATCH if x == y else MISMATCH
 
@@ -35,12 +36,13 @@ def indexes_diagonal(i, filas, columnas):
         inicio_fila += signo_fila
         inicio_columnas += signo_columna
 
-    indices_I = np.array(indices_I, dtype=int)
-    indices_J = np.array(indices_J, dtype=int)
+    indices_I = np.array(indices_I, dtype=np.int64)
+    indices_J = np.array(indices_J, dtype=np.int64)
 
     # if DEBUG: print(indices_I, indices_J)
     return indices_I, indices_J
 
+@jit
 def indexes_diagonal2(d, filas, columnas):
     """
     Return (I, J) arrays of indices in F on diagonal where i + j == d,
@@ -51,7 +53,7 @@ def indexes_diagonal2(d, filas, columnas):
     i = np.arange(1, i_size)
     j = d - i
     mask = (j >= 1) & (j < columnas)
-    return i[mask].astype(int), j[mask].astype(int)
+    return i[mask].astype(np.int64), j[mask].astype(np.int64)
 
 # Traceforward 
 def traceforward(F, a, b):
@@ -92,7 +94,7 @@ def needleman_wunsch(a, b):
     """
     n, m = len(a), len(b)
 
-    F = np.zeros((n+1, m+1), dtype=int)
+    F = np.zeros((n+1, m+1), dtype=np.int64)
     F[1:, 0] = np.arange(1, n+1) * GAP
     F[0, 1:] = np.arange(1, m+1) * GAP
     
@@ -108,24 +110,40 @@ def needleman_wunsch(a, b):
 
     return F[n][m], ref, best_align
 
-def needleman_optimized(a, b):
-    a = np.asarray(a)
-    b = np.asarray(b)
+@jit
+def fill_scores(a, b):
 
     n, m = len(a), len(b)
-    N, M = n+1, m+1
 
-    F = np.zeros((N, M), dtype=int)
-    F[1:, 0] = np.arange(1, N) * GAP
-    F[0, 1:] = np.arange(1, M) * GAP
+    F = np.zeros((n+1, m+1), dtype=np.int64)
+    F[1:, 0] = np.arange(1, n+1) * GAP
+    F[0, 1:] = np.arange(1, m+1) * GAP
+    
+    # Rellenar matriz
+    for i in range(1, n+1):
+        for j in range(1, m+1):
+            diag = F[i-1][j-1] + sim(a[i-1], b[j-1])
+            up   = F[i-1][j] + GAP
+            left = F[i][j-1] + GAP
+            F[i][j] = max(diag, up, left)
+
+    return F
+
+def fill_scores_diag(a, b, diag_func):
+    n, m = len(a), len(b)
+
+    F = np.zeros((n+1, m+1), dtype=np.int64)
+    F[1:, 0] = np.arange(1, n+1) * GAP
+    F[0, 1:] = np.arange(1, m+1) * GAP
 
     i_diag = 1
-    diag_amount = N + M - 1
+    diag_amount = F.shape[0] + F.shape[1] - 1
+    
     # Rellenar matriz
     while i_diag <= diag_amount:
         # if DEBUG: print("i_diag",i_diag, "diag_amount", diag_amount)
-        I, J = indexes_diagonal2(i_diag,N,M)
-        print("I",I,"J",J)
+        I, J = diag_func(i_diag + 1, n+1, m+1)
+        #print("I",I,"J",J)
         i_diag += 1
         if not I.any() or not J.any():
             break
@@ -134,18 +152,89 @@ def needleman_optimized(a, b):
         up_vals   = F[I-1, J] + GAP
         left_vals = F[I, J-1] + GAP
 
-        F[I, J] = np.maximum(np.maximum(diag_vals, up_vals), left_vals)
+        F[I, J] = np.maximum.reduce([diag_vals, up_vals, left_vals])
 
-    # if DEBUG: print_matrix(F,N,M)
+    return F
+
+
+def needleman_wunsch_numba(a, b):
+    """
+    Global Aligment
+    """
+    n, m = len(a), len(b)
+
+    F = fill_scores(a, b)
+
     ref, best_align = traceforward(F, a, b)
 
     return F[n][m], ref, best_align
+
+
+def needleman_wunsch_diag_numpy(a, b):
+    a = np.asarray(a)
+    b = np.asarray(b)
+
+    n, m = len(a), len(b)
+
+    F = fill_scores_diag(a, b, indexes_diagonal2)
+    
+    ref, best_align = traceforward(F, a, b)
+
+    return F[n][m], ref, best_align
+
+
+def indexes_diagonal_bounded(d, filas, columnas, bound = 0.4):
+    """
+    Return (I, J) arrays of indices in F on diagonal where i + j == d,
+    considering only 1 <= i < filas and 1 <= j < columnas (i,j are F indices).
+    Uses vectorized numpy operations for speed.
+    """
+
+    i_size = filas # d if d < filas else filas
+    i = np.arange(1, i_size)
+    #print("I:",i)
+    j = d - i
+    #print("J:",j)
+    mask = (j >= 1 ) & (j < columnas)
+    i_masked = i[mask].astype(int)
+    j_masked = j[mask].astype(int)
+
+    indexes_count = i_masked.size
+    min_side = min(filas,columnas)
+
+    max_elems = int(min_side * bound)
+    # print(max_elems, indexes_count)
+    if max_elems >= indexes_count:
+        return i_masked, j_masked
+    else:
+        differ = indexes_count - max_elems
+        outside_bounds = differ // 2
+        if outside_bounds == 0:
+            return i_masked, j_masked
+        # print("outside_bounds", outside_bounds)
+        return i_masked[outside_bounds:-outside_bounds], j_masked[outside_bounds:-outside_bounds]
+
+
+
+def needleman_wunsch_diagbounded_numpy(a, b):
+    a = np.asarray(a)
+    b = np.asarray(b)
+
+    n, m = len(a), len(b)
+
+    F = fill_scores_diag(a, b, indexes_diagonal_bounded)
+    
+    ref, best_align = traceforward(F, a, b)
+
+    return F[n][m], ref, best_align
+
+
 
 def smith_waterman(a, b):
     """Local alignment algorithm"""
     n, m = len(a), len(b)
     
-    F = np.zeros((n+1, m+1), dtype=int)
+    F = np.zeros((n+1, m+1), dtype=np.int64)
     F[1:, 0] = np.arange(1, n+1) * GAP
     F[0, 1:] = np.arange(1, m+1) * GAP
     
@@ -156,7 +245,7 @@ def smith_waterman(a, b):
     for i in range(1, n + 1):
         for j in range(1, m + 1):
             F[i, j] = max(
-                0,  # Can restart alignment (key difference!)
+                0,  # Can restart alignment 
                 F[i-1, j-1] + sim(a[i-1], b[j-1]),
                 F[i-1, j] + GAP,
                 F[i, j-1] + GAP
