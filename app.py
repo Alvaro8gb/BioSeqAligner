@@ -4,6 +4,7 @@ Main application file with UI components and views
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
 from src.algorithms import AlignmentScoring, get_aligner
 from ui import (
     AlignmentStats,
@@ -11,8 +12,6 @@ from ui import (
     LegendComponent,
     ExamplesComponent
 )
-
-import streamlit.components.v1 as components
 
 
 # ============================================================================
@@ -119,7 +118,7 @@ def render_explanation():
             f"""
             <iframe src="{url}" 
                     width="800" 
-                    height="600" 
+                    height="450" 
                     style="border:none; background-color:white;">
             </iframe>
             """,

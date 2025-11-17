@@ -78,45 +78,60 @@ class AlignmentVisualizer:
     @classmethod
     def visualize_alignment(cls, seq1, seq2):
         """
-        Create colored HTML visualization of alignment in a table, centered.
-        
+        Create colored HTML visualization of alignment in a scrollable table.
+
         Args:
             seq1: First aligned sequence (reference)
             seq2: Second aligned sequence (query)
-        
+
         Returns:
             str: HTML string with table visualization
         """
-        html = '<div style="display:flex; justify-content:center;">'
+
+        # Scrollable container
+        html = """
+        <div style="
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            padding-bottom: 10px;
+            width: 100%;
+        ">
+            <div style="display: inline-flex; justify-content: center; width: max-content;">
+        """
+
+        # Table
         html += '<table style="border-collapse: collapse; font-family: monospace; font-size: 24px; line-height: 1.8;">'
 
         # Sequence 1 row
         html += '<tr>'
         for char in seq1:
-            color = cls.COLORS['gap'] if char == '-' else cls.COLORS['reference']
-            html += cls._create_cell(char, color, cls.COLORS['border'])
-        html += '</tr>'
+            color = cls.COLORS["gap"] if char == "-" else cls.COLORS["reference"]
+            html += cls._create_cell(char, color, cls.COLORS["border"])
+        html += "</tr>"
 
         # Match indicator row
-        html += '<tr>'
+        html += "<tr>"
         for c1, c2 in zip(seq1, seq2):
             html += cls._create_match_indicator(c1, c2)
-        html += '</tr>'
+        html += "</tr>"
 
         # Sequence 2 row
-        html += '<tr>'
+        html += "<tr>"
         for c1, c2 in zip(seq1, seq2):
-            if c2 == '-':
-                color = cls.COLORS['gap']
+            if c2 == "-":
+                color = cls.COLORS["gap"]
             elif c1 == c2:
-                color = cls.COLORS['match']
+                color = cls.COLORS["match"]
             else:
-                color = cls.COLORS['mismatch']
-            html += cls._create_cell(c2, color, cls.COLORS['border'])
-        html += '</tr>'
+                color = cls.COLORS["mismatch"]
+            html += cls._create_cell(c2, color, cls.COLORS["border"])
+        html += "</tr>"
 
-        html += '</table></div>'
+        html += "</table></div></div>"  # close both containers
+
         return html
+
 
     @staticmethod
     def format_text_alignment(seq1, seq2):
