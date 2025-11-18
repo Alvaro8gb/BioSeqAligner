@@ -175,10 +175,9 @@ def needleman_wunsch_numba(a, b):
 
 
 def needleman_wunsch_diag_numpy(a, b):
-    a = np.asarray(a)
-    b = np.asarray(b)
-
     n, m = len(a), len(b)
+    a = np.array(list(a))
+    b = np.array(list(b))
 
     F = fill_scores_diag(a, b, indexes_diagonal2)
     
@@ -221,8 +220,8 @@ def indexes_diagonal_bounded(d, filas, columnas, bound = 0.4):
 
 
 def needleman_wunsch_diagbounded_numpy(a, b):
-    a = np.asarray(a)
-    b = np.asarray(b)
+    a = np.array(list(a))
+    b = np.array(list(b))
 
     n, m = len(a), len(b)
     if DEBUG: print("n", n, "m", m)
