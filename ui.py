@@ -91,13 +91,13 @@ class AlignmentVisualizer:
         # Scrollable container
         html = """
         <div style="
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            padding-bottom: 10px;
-            width: 100%;
+            display: flex; /* Habilita el flexbox para alinear elementos horizontalmente */
+            overflow-x: auto; /* Permite el desplazamiento horizontal si el contenido es demasiado ancho */
+            overflow-y: hidden; /* Oculta barras de desplazamiento verticales innecesarias */
+            white-space: nowrap; /* Evita que los elementos hijos salten a una nueva línea */
+            padding-bottom: 10px; /* Espacio para que no se corte la barra de desplazamiento */
+            width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
         ">
-            <div style="display: inline-flex; justify-content: center; width: max-content;">
         """
 
         # Table
