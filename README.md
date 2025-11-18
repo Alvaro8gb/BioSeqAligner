@@ -156,7 +156,7 @@ Este proyecto está bajo la licencia [MIT](LICENSE).
 
 ## Reporte 
 
-Para más información sobre el proyecto leer [reporte](report.pdf).
+Para más información sobre el proyecto leer [reporte](reporte.pdf).
 
 
 ## Atribución
