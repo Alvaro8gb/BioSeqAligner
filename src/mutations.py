@@ -9,7 +9,7 @@ def random_base(exclude=None):
     choices = [b for b in DNA_BASES if b != exclude]
     return random.choice(choices)
 
-def mutate_seq(seq:List, n_mutations=5, seed=8):
+def mutate_seq(seq, n_mutations=5, seed=8):
     """
     Apply exactly n_mutations at random positions in the sequence.
     Each mutation changes only one base at a time:
@@ -21,7 +21,7 @@ def mutate_seq(seq:List, n_mutations=5, seed=8):
     if seed is not None:
         random.seed(seed)
 
-    mutated = str(seq)
+    mutated = seq
     log = []
 
     for _ in range(n_mutations):
